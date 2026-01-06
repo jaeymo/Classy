@@ -12,3 +12,6 @@ realm = "shared"
 [dependencies]
 Janitor = "howmanysmall/janitor@1.18.3"
 Signal = "stravant/goodsignal@0.3.1"
+
+[dev-dependencies]
+TestEZ = "roblox/testez@0.4.1"
