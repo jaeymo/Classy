@@ -8,6 +8,9 @@
                 "Classy": {
                     "$path": "lib"
                 }
+            },
+            "DevPackages": {
+                "$path": "DevPackages"
             }
         }
     }
