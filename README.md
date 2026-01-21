@@ -2,13 +2,13 @@
 Classy library. Classy is a tag-driven lifecycle manager for instance-bound objects.
 
 ## Why Use Classy?
-- Classy makes tying OOP classes to tags possible.
-- Classy handles the cleanup of an object's metatable and the provided [Janitor](https://github.com/howmanysmall/Janitor) object.
+- You have the option of tracking instances with classes or functions.
+- Classy handles the cleanup of a class object's metatable and the provided [Janitor](https://github.com/howmanysmall/Janitor) object.
 - Full generic type safety is preserved when accessing applied objects.
 - If you are a fanatic about object-oriented programming, this is the module for you! Simply create classes for game objects and track them with tags.
 
 ## Installation
-Classy is installable via [wally](https://wally.run/) and you can visit the page [here](https://wally.run/package/jaeymo/classy?version=1.0.1).
+Classy is installable via [wally](https://wally.run/), and you can visit the page [here](https://wally.run/package/jaeymo/classy?version=1.0.1).
 
 ## Dependencies
 - [Janitor](https://github.com/howmanysmall/Janitor)
