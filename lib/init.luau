@@ -3,7 +3,7 @@
 --[[
 	Classy: A Classy is useful because writing code for instances becomes much better!
 	Author: Jaeymo
-	Version: 1.0.1
+	Version: 1.1.0
 	License: MIT
 	Created: 01/18/2026
 
@@ -19,7 +19,7 @@ local Signal = require(Packages.Signal)
 
 --[=[
 	@class Applied
-	The Applied class is what Classy manages and attaches instances to.
+	The Applied class is what Classy manages and attaches instances to
 ]=]
 local Applied = {}
 Applied.__index = Applied
@@ -27,7 +27,7 @@ Applied.__index = Applied
 --[=[
 	@class Classy
 	A Classy is useful for instantiating and managing instances of
-	based on tags.
+	based on tags
 ]=]
 local Classy = {}
 Classy.__index = Classy
@@ -35,6 +35,7 @@ Classy.__index = Classy
 type Validation = "ClassNames" | "Ancestors"
 
 export type Janitor = Janitor.Janitor
+export type Connection = Signal.Connection
 export type Signal<T...> = Signal.Signal<T...>
 
 export type Constructable<T> = ((Instance, Janitor) -> T) | {
@@ -151,11 +152,11 @@ function Applied.GetData<T, U>(self: Applied<T, U>): T
 end
 
 --[=[
-	Destroys the Janitor and the attached data of an Applied object. 
+	Destroys the Janitor and the attached data of an Applied object
 
 	:::warning Metatable Removal
 	Running this will make any further attempts to call a method of Applied
-	error.
+	error
 	:::
 ]=]
 function Applied.Destroy<T, U>(self: Applied<T, U>)
@@ -169,18 +170,18 @@ function Applied.Destroy<T, U>(self: Applied<T, U>)
 end
 
 --[=[
-	When an instance gets an object applied into Classy.
+	When an instance gets an object applied into Classy
 	@prop InstanceAdded Signal<Instance, Applied<T, U>>
 	@within Classy
 ]=]
 --[=[
-	When an instance gets an object revoked from Classy.
+	When an instance gets an object revoked from Classy
 	@prop InstanceRevoked Signal<Instance>
 	@within Classy
 ]=]
 
 --[=[
-	Instantiates a new Classy object.
+	Instantiates a new Classy object
     @param Tag string
     @param Constructable Constructable<T>
     @param ClassyConfig ClassyConfig<U>
@@ -206,7 +207,7 @@ function Classy.new<T, U>(Tag: string, Constructable: Constructable<T>, ClassyCo
 end
 
 --[=[
-	Initializes a Classy object.
+	Initializes a Classy object
 ]=]
 function Classy.Init<T, U>(self: Classy<T, U>)
     for _, Instance in CollectionService:GetTagged(self.Tag) do
@@ -265,7 +266,7 @@ function Classy.GetAll<T, U>(self: Classy<T, U>): { [Instance]: Applied<T, U> }
 end
 
 --[=[
-	Bypasses the `CanBeApplied` check and applies an instance.
+	Bypasses the `CanBeApplied` check and applies an instance
     
     ```lua
     local AppliedObjet = ClassyObject:Apply(SomeInstance)
@@ -295,11 +296,11 @@ function Classy.Apply<T, U>(self: Classy<T, U>, Instance: Instance): Applied<T, 
 end
 
 --[=[
-	Revokes an Instance from Classy.
+	Revokes an Instance from Classy
     
     :::info Note
-	This will nullify the object's metatable, so you will not be able to it's
-	object after revoking it from Classy.
+	This will nullify the object's metatable, so you will not be able to use it's
+	object after revoking it from Classy
 	:::
 
     ```lua
@@ -319,6 +320,30 @@ function Classy.Revoke<T, U>(self: Classy<T, U>, Instance: Instance)
     
     Instance:RemoveTag(self.Tag)
     self.InstanceRevoked:Fire(Instance)
+end
+
+--[=[
+	Runs a callback for all applied objects and hooks into the `InstanceAdded` signal
+
+    ```lua
+    local Connection = ClassyObject:ObserveApplied(function(Instance, Applied)
+        Applied:GetData():DoSomething()
+    end)
+
+    Connection:Disconnect()
+    ```
+
+    @param Callback (Instance: Instance, Applied: Applied<T, U>)
+    @return Connection Connection
+]=]
+function Classy.ObserveApplied<T, U>(self: Classy<T, U>, Callback: (Instance: Instance, Applied: Applied<T, U>) -> ()): Connection
+    for Inst, AppliedObject in self:GetAll() do
+        task.spawn(function()
+            Callback(Inst, AppliedObject :: Applied<T, U>)
+        end)
+    end
+
+    return self.InstanceAdded:Connect(Callback)
 end
 
 --[=[
